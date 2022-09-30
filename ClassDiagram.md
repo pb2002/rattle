@@ -1,5 +1,6 @@
 ```mermaid
 classDiagram
+	direction TB
 	class Config {
 		fileAssociations : dict[str, FileTypeDescriptor]
 		columns : list[PropertyFormatter]
@@ -45,27 +46,6 @@ classDiagram
 	ContentTUI <|-- BigListContentTUI
 	PyTermGUI <.. TUI
 
-	class PropertyFormatter {
-		name : str
-		format(item : Item) str
-	}
-	
-	class HybridFormatter {
-		fFormatter : PropertyFormatter
-		dFormatter : PropertyFormatter
-		format(item : Item) 
-	}
-	
-	Config "1" o-- "*" PropertyFormatter
-	PropertyFormatter <|-- Base2SizeFormatter
-	PropertyFormatter <|-- Base10SizeFormatter
-	PropertyFormatter <|-- NameFormatter
-	PropertyFormatter <|-- TimeFormatter
-	PropertyFormatter <|-- HybridFormatter
-	HybridFormatter o-- PropertyFormatter
-	
-	TimeFormatter <|-- ModifiedTimeFormatter
-	TimeFormatter <|-- CreatedTimeFormatter
 
 	class Item {
 		path : str
@@ -82,7 +62,32 @@ classDiagram
 	class Directory {
 		items : int
 	}
+	Item <|-- File
+	Item <|-- Directory
+
+	class PropertyFormatter {
+		name : str
+		format(item : Item) str
+	}
 	
+	class HybridFormatter {
+		fFormatter : PropertyFormatter
+		dFormatter : PropertyFormatter
+		format(item : Item) 
+	}
+	
+	Config "1" o-- "*" PropertyFormatter
+	PropertyFormatter <|-- NameFormatter
+	PropertyFormatter <|-- Base2SizeFormatter
+	PropertyFormatter <|-- Base10SizeFormatter
+	PropertyFormatter <|-- TimeFormatter
+	PropertyFormatter <|-- HybridFormatter
+
+	
+	TimeFormatter <|-- ModifiedTimeFormatter
+	TimeFormatter <|-- CreatedTimeFormatter
+
+
 	class FileTypeDescriptor {
 		canonicalName : str
 		operations : list[FileOperation]
@@ -94,10 +99,9 @@ classDiagram
 	}
 	
 	FileTypeDescriptor "*" o-- "*" FileOperation
-	File "*" o-- "1" FileTypeDescriptor
 	Config "1" o-- "*" FileTypeDescriptor
+	File "*" o-- "1" FileTypeDescriptor
 	
-	Item <|-- File
-	Item <|-- Directory
+	FileOperation ..> TUI
 ```
 

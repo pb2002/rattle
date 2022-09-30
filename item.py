@@ -18,6 +18,7 @@ class Item:
         else:
             return Directory(path)
 
+# ddd
 class File(Item):
     name: str
     path: str
@@ -25,8 +26,9 @@ class File(Item):
     extension: str
     mtime: int
     ctime: int
-
+    
     def __init__(self, path: str):
+        
         super().__init__(path)
         self.size = os.path.getsize(path)
         self.extension = os.path.splitext(path)[1]
