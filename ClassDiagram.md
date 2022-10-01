@@ -1,6 +1,6 @@
 ```mermaid
 classDiagram
-	direction TB
+	direction LR
 	class Config {
 		fileAssociations : dict[str, FileTypeDescriptor]
 		columns : list[PropertyFormatter]
@@ -61,42 +61,40 @@ classDiagram
 		canonicalName : str
 		operations : list[FileOperation]
 	}
-	
 	class FileOperation {
 		description : str
 		execute(path : str)
 	}
 	Application "1" *-- "1" AppContext
-	Application "1" *-- "1" TUI
+
 	Application ..> Config
+	Config "1" o-- "*" FileTypeDescriptor
+	Config "1" o-- "*" PropertyFormatter
+	Config <.. TUI
 
 	AppContext "1" o-- "*" Item
 	Item <|-- File
 	Item <|-- Directory
 
-	Config "1" o-- "*" FileTypeDescriptor
-	Config <.. TUI
-	Config "1" o-- "*" PropertyFormatter
-
-	PropertyFormatter <|-- HybridFormatter
 	PropertyFormatter <|-- NameFormatter
-	PropertyFormatter <|-- Base2SizeFormatter
 	PropertyFormatter <|-- TimeFormatter	
 	TimeFormatter <|-- ModifiedTimeFormatter
 	TimeFormatter <|-- CreatedTimeFormatter
+	PropertyFormatter <|-- Base2SizeFormatter
 	PropertyFormatter <|-- Base10SizeFormatter	
+	PropertyFormatter <|-- HybridFormatter
 
+	Application "1" *-- "1" TUI
+	TUI ..> PyTermGUI
 	TUI "1" *-- "1" ContentTUI
-	TUI "1" *-- "1" PopupTUI
 	ContentTUI <|-- ListContentTUI
 	ContentTUI <|-- TileContentTUI
 	ContentTUI <|-- BigListContentTUI
+	TUI "1" *-- "1" PopupTUI
 
-	TUI ..> PyTermGUI
 	
 	FileTypeDescriptor "*" o-- "*" FileOperation
 	File "*" o-- "1" FileTypeDescriptor
 	
-	FileOperation ..> TUI
 ```
 
