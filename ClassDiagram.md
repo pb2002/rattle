@@ -34,10 +34,11 @@ classDiagram
 		display(context : AppContext)
 	}
 	class Item {
+		<<abstract>>
 		path : str
 		name : str
 	}
-	class File {
+	class File {		
 		extension : str
 		size : int
 		modifiedTime : int
@@ -49,6 +50,7 @@ classDiagram
 		items : int
 	}
 	class PropertyFormatter {
+		<<abstract>>
 		name : str
 		format(item : Item) str
 	}
@@ -68,8 +70,8 @@ classDiagram
 	Application "1" *-- "1" AppContext
 
 	Application ..> Config
-	Config "1" o-- "*" FileTypeDescriptor
-	Config "1" o-- "*" PropertyFormatter
+	Config "1" o-- "*" FileTypeDescriptor : configures
+	Config "1" o-- "*" PropertyFormatter : configures
 	Config <.. TUI
 
 	AppContext "1" o-- "*" Item
@@ -85,7 +87,7 @@ classDiagram
 	PropertyFormatter <|-- HybridFormatter
 
 	Application "1" *-- "1" TUI
-	TUI ..> PyTermGUI
+	TUI ..> PyTermGUI : interfaces with
 	TUI "1" *-- "1" ContentTUI
 	ContentTUI <|-- ListContentTUI
 	ContentTUI <|-- TileContentTUI
