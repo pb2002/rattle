@@ -1,3 +1,24 @@
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[project]
+name = "rattlelib"
+version = "0.0.1"
+authors = [
+  { name="Pepijn Bakker" },
+  { name="Ruben Broere" },
+  { name="Noa " },
+]
+description = "Package for the Rattle file explorer"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/pb2002/rattle"
+"Bug Tracker" = "https://github.com/pb2002/rattle/issues"
