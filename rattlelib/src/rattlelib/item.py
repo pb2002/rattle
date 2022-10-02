@@ -18,7 +18,6 @@ class Item:
         else:
             return Directory(path)
 
-# ddd
 class File(Item):
     name: str
     path: str

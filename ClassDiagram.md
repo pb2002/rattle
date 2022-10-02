@@ -1,6 +1,6 @@
 ```mermaid
 classDiagram
-	direction LR
+	direction TB
 	class Config {
 		fileAssociations : dict[str, FileTypeDescriptor]
 		columns : list[PropertyFormatter]
@@ -49,15 +49,24 @@ classDiagram
 	class Directory {
 		items : int
 	}
-	class PropertyFormatter {
-		<<abstract>>
-		name : str
-		format(item : Item) str
+	class IFormatter {
+		 <<interface T>>
+		 format(t : T) str
 	}
-	class HybridFormatter {
-		fFormatter : PropertyFormatter
-		dFormatter : PropertyFormatter
-		format(item : Item) 
+	class FileFormatter {
+		<<abstract | T = File>>
+		format(file : File) str
+	}
+	class DirectoryFormatter {
+		<<abstract | T = Directory>>
+		format(dir : Directory) str
+	}
+	class PropertyFormatter {
+		<<abstract | T = Item>>
+		name : str
+		fileFormatter : FileFormatter
+		dirFormatter : DirectoryFormatter
+		format(item : Item) str
 	}
 	class FileTypeDescriptor {
 		canonicalName : str
@@ -67,33 +76,44 @@ classDiagram
 		description : str
 		execute(path : str)
 	}
-	Application "1" *-- "1" AppContext
 
-	Application ..> Config
-	Config "1" o-- "*" FileTypeDescriptor : configures
-	Config "1" o-- "*" PropertyFormatter : configures
-	Config <.. TUI
-
-	AppContext "1" o-- "*" Item
-	Item <|-- File
-	Item <|-- Directory
-
-	PropertyFormatter <|-- NameFormatter
-	PropertyFormatter <|-- TimeFormatter	
-	TimeFormatter <|-- ModifiedTimeFormatter
-	TimeFormatter <|-- CreatedTimeFormatter
-	PropertyFormatter <|-- Base2SizeFormatter
-	PropertyFormatter <|-- Base10SizeFormatter	
-	PropertyFormatter <|-- HybridFormatter
 
 	Application "1" *-- "1" TUI
-	TUI ..> PyTermGUI : interfaces with
+	PyTermGUI <.. TUI : interfaces with
 	TUI "1" *-- "1" ContentTUI
 	ContentTUI <|-- ListContentTUI
 	ContentTUI <|-- TileContentTUI
 	ContentTUI <|-- BigListContentTUI
 	TUI "1" *-- "1" PopupTUI
 
+	Config "1" o-- "*" PropertyFormatter : configures
+	Config "1" o-- "*" FileTypeDescriptor : configures
+	TUI ..> Config
+	Application ..> Config
+	Application "1" *-- "1" AppContext
+	
+	AppContext "1" o-- "*" Item
+	Item <|-- File
+	Item <|-- Directory
+
+	PropertyFormatter "1" o-- "1" FileFormatter
+	IFormatter <|-- FileFormatter
+	IFormatter <|-- DirectoryFormatter
+	PropertyFormatter --|> IFormatter
+	PropertyFormatter "1" o-- "1" DirectoryFormatter
+	
+
+
+	FileFormatter <|-- EmptyFileFormatter
+	
+	FileFormatter <|-- NameFormatter
+	FileFormatter <|-- TimeFormatter	
+	TimeFormatter <|-- ModifiedTimeFormatter
+	FileFormatter <|-- Base2SizeFormatter
+	FileFormatter <|-- Base10SizeFormatter	
+	TimeFormatter <|-- CreatedTimeFormatter
+
+	DirectoryFormatter <|-- EmptyDirectoryFormatter
 	
 	FileTypeDescriptor "*" o-- "*" FileOperation
 	File "*" o-- "1" FileTypeDescriptor
